@@ -1,3 +1,4 @@
+#SERVER
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -6,13 +7,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
       show-sql: true
       properties:
         hibernate:
           format-sql: true
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: create-drop
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -23,3 +24,19 @@ spring:
 token:
   signing:
     key: 6B58703273357638792F423F4528482B4D6251655468576D5A7134743777217A25432A462D4A614E645267556B58703273357638792F423F4528482B4D6251655468576D5A7134743777217A25432A462D4A614E64526755
+    expiration: 86400000 # a day
+    refresh-token:
+      expiration: 604800000
+
+  #OMDB
+org:
+  example:
+    omdb:
+      url: http://www.omdbapi.com/?s={movie}&page={page}&apikey={key}
+      apikey: 90e9ce58
+    omdbsec:
+      url: http://www.omdbapi.com/?apikey={key}&t={title}
+      apikey: 90e9ce58
+    omdbthird:
+      url: http://www.omdbapi.com/?apikey={key}&i={imdbId}
+      apikey: 90e9ce58

@@ -1,10 +1,8 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.example.model.api_model.FavoriteMovie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +17,11 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users")
+@ToString(exclude = "tokens")
 public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "user_name", unique = true, nullable = false)
-    private String username;
+    private String userName;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -30,8 +29,15 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = " token_id")
+    private List<Token> tokens;
+
     @Enumerated(EnumType.STRING)
     public UserRole role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoriteMovie> favoriteMovies;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -41,6 +47,11 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return userName;
     }
 
     @Override
@@ -61,5 +72,9 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isAdmin() {
+        return this.role == UserRole.ROLE_ADMIN;
     }
 }
