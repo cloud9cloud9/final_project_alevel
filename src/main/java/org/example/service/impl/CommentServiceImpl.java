@@ -34,8 +34,8 @@ public class CommentServiceImpl implements CommentService {
     public Movie saveComment(@NonNull CommentDto comment,
                              @NonNull String imdbId,
                              @NonNull User user) {
-        Movie movie = movieService.validateAndGetMovie(imdbId);
-        Comment movieComment = movieMapper.toMovieComment(comment);
+        var movie = movieService.validateAndGetMovie(imdbId);
+        var movieComment = movieMapper.toMovieComment(comment);
         movieComment.setMovie(movie);
         movieComment.setAuthorId(user.getId());
         movieComment.setTimestamp(LocalDate.now());
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void update(@NonNull Long id,
                        @NonNull CommentUpdateRequestDto comment) {
-        Comment existingComment = commentRepository.findById(id)
+        var existingComment = commentRepository.findById(id)
                 .orElseThrow(CommentNotFoundException::new);
         existingComment.setText(comment.getText());
         commentRepository.save(existingComment);
@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseEntity<?> handleCommentAuthorization(@NonNull Long commentId,
                                                         @NonNull User currentUser) {
-        Comment comment = commentRepository.findById(commentId)
+        var comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 
         if (comment == null || currentUser == null) {

@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(@NonNull final Long id,
                        @NonNull User user) {
-        User fUser = userRepository.findById(id)
+        var fUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         fUser.setUserName(user.getUsername());
         fUser.setEmail(user.getEmail());
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(@NonNull final Long id,
                        @NonNull UserUpdateRequestDto requestUser) {
-        User upUser = userRepository.findById(id)
+        var upUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         upUser.setUserName(requestUser.userName());
         upUser.setEmail(requestUser.email());
