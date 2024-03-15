@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(Long id, User user) {
+    public void update(@NonNull final Long id,
+                       @NonNull User user) {
         User fUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         fUser.setUserName(user.getUsername());

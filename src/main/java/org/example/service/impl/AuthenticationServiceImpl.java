@@ -20,6 +20,7 @@ import org.example.service.JwtService;
 import org.example.service.TokenService;
 import org.example.service.UserService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -78,8 +79,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public void refresh(HttpServletRequest request,
-                        HttpServletResponse response) throws IOException {
+    public void refresh(@NonNull HttpServletRequest request,
+                        @NonNull HttpServletResponse response) throws IOException {
 
         var accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
@@ -110,7 +111,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
-    private void saveUserToken(User user, String jwtToken) {
+    private void saveUserToken(User user,
+                               final String jwtToken) {
         var token = Token.builder()
                 .user(user)
                 .token(jwtToken)

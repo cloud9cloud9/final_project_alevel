@@ -5,6 +5,7 @@ import org.example.exception.InvalidTokenException;
 import org.example.model.Token;
 import org.example.repository.TokenRepository;
 import org.example.service.TokenService;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,28 +20,28 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository tokenRepository;
 
     @Override
-    public void create(Token token) {
+    public void create(@NonNull Token token) {
         tokenRepository.save(token);
     }
 
     @Override
-    public List<Token> findAllByUser_Id(Long userId) {
+    public List<Token> findAllByUser_Id(@NonNull final Long userId) {
         return tokenRepository.findAllByUser_Id(userId);
     }
 
     @Override
-    public Token findByToken(String token) {
+    public Token findByToken(@NonNull String token) {
         return tokenRepository.findByToken(token)
                 .orElseThrow(InvalidTokenException::new);
     }
 
     @Override
-    public void deleteByToken(String token) {
+    public void deleteByToken(@NonNull String token) {
         tokenRepository.deleteByToken(token);
     }
 
     @Override
-    public void update(Token token) {
+    public void update(@NonNull Token token) {
         tokenRepository.save(token);
     }
 }

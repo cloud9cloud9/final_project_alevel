@@ -58,8 +58,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<?> handleCommentAuthorization(Long commentId,
-                                                        User currentUser) {
+    public ResponseEntity<?> handleCommentAuthorization(@NonNull Long commentId,
+                                                        @NonNull User currentUser) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 

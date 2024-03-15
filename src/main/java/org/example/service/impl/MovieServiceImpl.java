@@ -30,7 +30,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieMapper movieMapper;
 
     @Override
-    public Movie validateAndGetMovie(String imdbId) {
+    public Movie validateAndGetMovie(@NonNull final String imdbId) {
         Movie movie = movieRepository.findById(imdbId)
                 .orElseThrow(MovieNotFoundException::new);
         if(movie == null) {
@@ -63,7 +63,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public ResponseEntity<List<MovieDto>> findMovies(final String movieTitle,
+    public ResponseEntity<List<MovieDto>> findMovies(@NonNull final String movieTitle,
                                                      @NonNull Integer page) {
         final var movieDto = omdbClient.searchMovies(movieTitle, page);
         List<Map<String, String>> searchResults = (List<Map<String, String>>) movieDto.get("Search");
@@ -88,8 +88,8 @@ public class MovieServiceImpl implements MovieService {
 
 
     @Override
-    public void update(String imdbId,
-                       UpdateMovieRequestDto updatedMovie) {
+    public void update(@NonNull final String imdbId,
+                       @NonNull UpdateMovieRequestDto updatedMovie) {
         Movie movie = validateAndGetMovie(imdbId);
         movie.setYear(updatedMovie.getYear());
         movie.setTitle(updatedMovie.getTitle());
@@ -99,7 +99,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void deleteByImdbId(String imdbId) {
+    public void deleteByImdbId(@NonNull final String imdbId) {
         movieRepository.deleteByImdbId(imdbId);
     }
 }

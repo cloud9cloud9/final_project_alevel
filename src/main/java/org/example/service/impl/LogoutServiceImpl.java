@@ -8,6 +8,7 @@ import org.example.service.JwtService;
 import org.example.service.TokenService;
 import org.example.service.UserService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -24,9 +25,9 @@ public class LogoutServiceImpl implements LogoutHandler {
     private final TokenService tokenService;
 
     @Override
-    public void logout(HttpServletRequest request,
-                       HttpServletResponse response,
-                       Authentication authentication) {
+    public void logout(@NonNull HttpServletRequest request,
+                       @NonNull HttpServletResponse response,
+                       @NonNull Authentication authentication) {
         final String getHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
 

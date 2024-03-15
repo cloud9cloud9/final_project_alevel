@@ -11,6 +11,7 @@ import org.example.repository.FavoriteMovieRepository;
 import org.example.service.FavoriteMovieService;
 import org.example.service.MovieService;
 import org.example.service.UserService;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,8 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     private final UserService userService;
 
     @Override
-    public void addMovie(Long userId, String movieId) {
+    public void addMovie(@NonNull final Long userId,
+                         @NonNull final String movieId) {
         FavoriteMovie favoriteMovie = FavoriteMovie.builder()
                 .movie(movieService.validateAndGetMovie(movieId))
                 .user(userService.findById(userId))
@@ -38,7 +40,8 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     }
 
     @Override
-    public void removeMovie(Long userId, String movieId) {
+    public void removeMovie(@NonNull final Long userId,
+                            @NonNull final String movieId) {
         final var movie = movieService.validateAndGetMovie(movieId);
         final var user = userService.findById(userId);
         FavoriteMovie favoriteMovie = favoriteMovieRepository.findByMovieAndUser(movie, user)
@@ -54,7 +57,8 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     }
 
     @Override
-    public FavoriteMovie findByUserAndAndMovie(User user, Movie movie) {
+    public FavoriteMovie findByUserAndAndMovie(User user,
+                                               Movie movie) {
         List<FavoriteMovie> movies = favoriteMovieRepository.findAllByUser(user)
                 .orElseThrow(EmptyFavoriteMoviesException::new);
         Optional<FavoriteMovie> favoriteMovie = movies.stream()
