@@ -32,7 +32,7 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     @Override
     public void addMovie(@NonNull final Long userId,
                          @NonNull final String movieId) {
-        var favoriteMovie = FavoriteMovie.builder()
+        FavoriteMovie favoriteMovie = FavoriteMovie.builder()
                 .movie(movieService.validateAndGetMovie(movieId))
                 .user(userService.findById(userId))
                 .build();
@@ -42,9 +42,9 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     @Override
     public void removeMovie(@NonNull final Long userId,
                             @NonNull final String movieId) {
-        final var movie = movieService.validateAndGetMovie(movieId);
-        final var user = userService.findById(userId);
-        final var favoriteMovie = favoriteMovieRepository.findByMovieAndUser(movie, user)
+        final Movie movie = movieService.validateAndGetMovie(movieId);
+        final User user = userService.findById(userId);
+        FavoriteMovie favoriteMovie = favoriteMovieRepository.findByMovieAndUser(movie, user)
                 .orElseThrow(FavoriteMovieNotFoundException::new);
         favoriteMovieRepository.delete(favoriteMovie);
     }

@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie validateAndGetMovie(@NonNull final String imdbId) {
-        var movie = movieRepository.findById(imdbId)
+        Movie movie = movieRepository.findById(imdbId)
                 .orElseThrow(MovieNotFoundException::new);
         if(movie == null) {
             findById(imdbId);
@@ -44,15 +44,15 @@ public class MovieServiceImpl implements MovieService {
         final var movieOptional = movieRepository.findById(imdbId);
 
         if (movieOptional.isPresent()) {
-            var movie = movieOptional.get();
-            var movieDto = movieMapper.toMovieDto(movie);
+            Movie movie = movieOptional.get();
+            MovieDto movieDto = movieMapper.toMovieDto(movie);
             return ResponseEntity.ok(movieDto);
 
         } else {
-            final var movieDto = omdbClient.findMovieById(imdbId);
+            final MovieDto movieDto = omdbClient.findMovieById(imdbId);
 
             if (movieDto != null) {
-                var movie = movieMapper.toMovie(movieDto);
+                Movie movie = movieMapper.toMovie(movieDto);
                 movieRepository.save(movie);
                 return ResponseEntity.ok(movieDto);
             } else {
@@ -66,15 +66,15 @@ public class MovieServiceImpl implements MovieService {
         final var movieOptional = movieRepository.findMovieByTitle(movieTitle);
 
         if (movieOptional.isPresent()) {
-            var movie = movieOptional.get();
-            var movieDto = movieMapper.toMovieDto(movie);
+            Movie movie = movieOptional.get();
+            MovieDto movieDto = movieMapper.toMovieDto(movie);
             return ResponseEntity.ok(movieDto);
 
         } else {
-            final var movieDto = omdbClient.findMovieByTitle(movieTitle);
+            final MovieDto movieDto = omdbClient.findMovieByTitle(movieTitle);
 
             if (movieDto != null) {
-                var movie = movieMapper.toMovie(movieDto);
+                Movie movie = movieMapper.toMovie(movieDto);
                 movieRepository.save(movie);
                 return ResponseEntity.ok(movieDto);
             } else {
@@ -111,7 +111,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void update(@NonNull final String imdbId,
                        @NonNull UpdateMovieRequestDto updatedMovie) {
-        var movie = validateAndGetMovie(imdbId);
+        Movie movie = validateAndGetMovie(imdbId);
         movie.setYear(updatedMovie.getYear());
         movie.setTitle(updatedMovie.getTitle());
         movie.setType(updatedMovie.getType());

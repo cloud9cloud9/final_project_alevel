@@ -82,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void refresh(@NonNull HttpServletRequest request,
                         @NonNull HttpServletResponse response) throws IOException {
 
-        var accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
             throw new TokenVerifyException();
         }
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final var userDetails = userService.findByUserName(userName)
                 .orElseThrow(UserNotFoundException::new);
         if (jwtService.isTokenValid(accessToken, userDetails)) {
-            var refreshToken = jwtService.refreshToken(userDetails);
+            final String refreshToken = jwtService.refreshToken(userDetails);
             revokeAllUserTokens(userDetails);
             saveUserToken(userDetails, refreshToken);
             var authResponse = AuthenticationResponse.builder()

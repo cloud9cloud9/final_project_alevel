@@ -33,17 +33,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(@NonNull final Long id,
                        @NonNull User user) {
-        var fUser = userRepository.findById(id)
+        User upUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        fUser.setUserName(user.getUsername());
-        fUser.setEmail(user.getEmail());
-        userRepository.save(fUser);
+        upUser.setUserName(user.getUsername());
+        upUser.setEmail(user.getEmail());
+        userRepository.save(upUser);
     }
 
     @Override
     public void update(@NonNull final Long id,
                        @NonNull UserUpdateRequestDto requestUser) {
-        var upUser = userRepository.findById(id)
+        User upUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         upUser.setUserName(requestUser.userName());
         upUser.setEmail(requestUser.email());
