@@ -19,11 +19,6 @@ public interface MovieService {
 
     ResponseEntity<List<MovieDto>> findMovies(String movieTitle, Integer page);
 
-    Movie saveMovie(Movie movie);
-
-    void saveAllMovie(List<Movie> movies);
-
-    void deleteMovie(Movie movie);
 
     void update(String imdbId,
                 UpdateMovieRequestDto movie);

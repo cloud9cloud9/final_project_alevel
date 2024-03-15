@@ -1,6 +1,7 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.client.OmdbClient;
 import org.example.dto.MovieDto;
 import org.example.dto.UpdateMovieRequestDto;
 import org.example.exception.MovieNotFoundException;
@@ -8,12 +9,10 @@ import org.example.mapper.MovieMapper;
 import org.example.model.api_model.Movie;
 import org.example.repository.MovieRepository;
 import org.example.service.MovieService;
-import org.example.util.GeneratorUrl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class MovieServiceImpl implements MovieService {
 
-    private final GeneratorUrl generatorUrl;
-
-    private final RestTemplate restTemplate;
+    private final OmdbClient omdbClient;
 
     private final MovieRepository movieRepository;
 
@@ -43,9 +40,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public ResponseEntity<MovieDto> findById(String imdbId) {
-        final var response = restTemplate.getForEntity(generatorUrl.generateUrlWithMovieId(imdbId), MovieDto.class);
-        final var movieDto = response.getBody();
+    public ResponseEntity<MovieDto> findById(@NonNull final String imdbId) {
+        final var movieDto = omdbClient.findMovieById(imdbId);
 
         if(movieDto != null) {
             Movie movie = movieMapper.toMovie(movieDto);
@@ -56,11 +52,11 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public ResponseEntity<MovieDto> find(@NonNull final String movieTitle) {
-        final var response = restTemplate.getForEntity(generatorUrl.generateUrlWithoutPage(movieTitle), MovieDto.class);
-        final var movieDto = response.getBody();
+        final var movieDto = omdbClient.findMovieByTitle(movieTitle);
 
         if(movieDto != null) {
-            Movie movieByTitle = movieRepository.findMovieByTitle(movieDto.getTitle());
+            Movie movieByTitle = movieRepository.findMovieByTitle(movieDto.getTitle())
+                    .orElseThrow(MovieNotFoundException::new);
             return ResponseEntity.ok(movieMapper.toMovieDto(movieByTitle));
         }
         return ResponseEntity.notFound().build();
@@ -69,8 +65,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public ResponseEntity<List<MovieDto>> findMovies(final String movieTitle,
                                                      @NonNull Integer page) {
-        final var response = restTemplate.getForObject(generatorUrl.generateUrlWithPage(movieTitle, page), Map.class);
-        List<Map<String, String>> searchResults = (List<Map<String, String>>) response.get("Search");
+        final var movieDto = omdbClient.searchMovies(movieTitle, page);
+        List<Map<String, String>> searchResults = (List<Map<String, String>>) movieDto.get("Search");
         List<MovieDto> movies = searchResults.stream()
                 .map(result -> MovieDto.builder()
                         .title(result.get("Title"))
@@ -90,30 +86,15 @@ public class MovieServiceImpl implements MovieService {
         return ResponseEntity.ok(movies);
     }
 
-    @Override
-    public Movie saveMovie(Movie movie) {
-        return movieRepository.save(movie);
-    }
-
-    @Override
-    public void saveAllMovie(List<Movie> movies) {
-        movieRepository.saveAll(movies);
-    }
-
-    @Override
-    public void deleteMovie(Movie movie) {
-        Movie validMovie = validateAndGetMovie(movie.getImdbId());
-        movieRepository.delete(validMovie);
-    }
 
     @Override
     public void update(String imdbId,
                        UpdateMovieRequestDto updatedMovie) {
         Movie movie = validateAndGetMovie(imdbId);
-        movie.setYear(updatedMovie.year());
-        movie.setTitle(updatedMovie.title());
-        movie.setType(updatedMovie.type());
-        movie.setPoster(updatedMovie.poster());
+        movie.setYear(updatedMovie.getYear());
+        movie.setTitle(updatedMovie.getTitle());
+        movie.setType(updatedMovie.getType());
+        movie.setPoster(updatedMovie.getPoster());
         movieRepository.save(movie);
     }
 

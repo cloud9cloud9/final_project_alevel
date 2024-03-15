@@ -39,8 +39,9 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
 
     @Override
     public void removeMovie(Long userId, String movieId) {
-        FavoriteMovie favoriteMovie = favoriteMovieRepository.findByMovieAndUser(movieService.validateAndGetMovie(movieId),
-                        userService.findById(userId))
+        final var movie = movieService.validateAndGetMovie(movieId);
+        final var user = userService.findById(userId);
+        FavoriteMovie favoriteMovie = favoriteMovieRepository.findByMovieAndUser(movie, user)
                 .orElseThrow(FavoriteMovieNotFoundException::new);
         favoriteMovieRepository.delete(favoriteMovie);
     }
@@ -49,6 +50,7 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     public List<FavoriteMovie> findAllByUser(User user) {
         return favoriteMovieRepository.findAllByUser(user)
                 .orElseThrow(EmptyFavoriteMoviesException::new);
+
     }
 
     @Override

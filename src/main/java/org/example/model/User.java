@@ -11,7 +11,8 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -75,6 +76,6 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public boolean isAdmin() {
-        return this.role == UserRole.ROLE_ADMIN;
+        return UserRole.ROLE_ADMIN.equals(this.role);
     }
 }

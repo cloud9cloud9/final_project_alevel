@@ -13,11 +13,13 @@ spring:
           format-sql: true
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: create-drop
+      ddl-auto: none
+    generate-ddl: false
   flyway:
     enabled: true
     baseline-on-migrate: true
-    clean-on-validate: true
+    clean-on-validation-error: true
+    clean-disabled: false
   logging:
     level:
       root: DEBUG
@@ -28,15 +30,16 @@ token:
     refresh-token:
       expiration: 604800000
 
-  #OMDB
+#OMDB
 org:
   example:
     omdb:
-      url: http://www.omdbapi.com/?s={movie}&page={page}&apikey={key}
+      url: http://www.omdbapi.com
       apikey: 90e9ce58
-    omdbsec:
-      url: http://www.omdbapi.com/?apikey={key}&t={title}
-      apikey: 90e9ce58
-    omdbthird:
-      url: http://www.omdbapi.com/?apikey={key}&i={imdbId}
-      apikey: 90e9ce58
+
+#SWAGGER
+springfox:
+  documentation:
+    swagger-ui:
+      path: /swagger-ui
+      url: http://localhost:8080/swagger-ui.html

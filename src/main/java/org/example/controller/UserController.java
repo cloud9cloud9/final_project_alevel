@@ -1,9 +1,12 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.constant.ApiConstantPath;
 import org.example.dto.UserDto;
 import org.example.dto.UserUpdateRequestDto;
 import org.example.dto.auth.AuthenticationResponse;
@@ -20,13 +23,12 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import static org.example.constant.ApiConstantPath.*;
-
 
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping(API_V1_USER)
+@RequestMapping(ApiConstantPath.API_V1_USER)
 @RestController
+@Tag(name = "User Management", description = "Endpoints for managing user profile details")
 public class UserController {
 
     private final UserService userService;
@@ -35,40 +37,47 @@ public class UserController {
 
     private final AuthenticatedUserProvider authenticatedUserProvider;
 
-    private final AuthenticationService authService;
+    private final AuthenticationService authenticationService;
 
-    @GetMapping(USER + "/{id}")
+    @GetMapping(ApiConstantPath.USER + "/{id}")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @Operation(summary = "Get user details by id",
+            description = "Get user details by id, registered in the system")
     public UserDto getUserById(@PathVariable(required = false) Long id) {
         log.info("Getting user by id: {}", id);
         User user = userService.findById(id);
         return userMapper.toUserDto(user);
     }
 
-    @GetMapping(ADMIN + "/users")
+    @GetMapping(ApiConstantPath.ADMIN + "/users")
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all users",
+            description = "Get all users, registered in the system, only for admin users")
     public List<UserDto> getAllUser() {
         log.info("Getting all users");
         Collection<User> all = userService.findAll();
         return userMapper.toUserDto(all);
     }
 
-    @PutMapping(USER)
+    @PutMapping(ApiConstantPath.USER)
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @Operation(summary = "Update user details",
+            description = "Update user details, registered in the system, only for authenticated users")
     public ResponseEntity<AuthenticationResponse> updateUser(@Valid @RequestBody final UserUpdateRequestDto user,
                                                              HttpServletRequest request) throws IOException {
         log.info("Update user: {}", user);
         final var authUserId = authenticatedUserProvider.getUserId(request);
         userService.update(authUserId, user);
-        return ResponseEntity.ok(authService.refreshTokenUpdatedUser(authUserId));
+        return ResponseEntity.ok(authenticationService.refreshTokenUpdatedUser(authUserId));
     }
 
-    @DeleteMapping(USER)
+    @DeleteMapping(ApiConstantPath.USER)
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> deleteUser(HttpServletRequest request) {
+    @Operation(summary = "Delete user",
+            description = "Delete user, registered in the system, only for authenticated users")
+    public void deleteUser(HttpServletRequest request) {
         final var authUserId = authenticatedUserProvider.getUserId(request);
         log.info("Delete user by id: {}", authUserId);
         userService.delete(authUserId);
-        return ResponseEntity.ok().build();
     }
 }

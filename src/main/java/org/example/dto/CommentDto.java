@@ -1,6 +1,8 @@
 package org.example.dto;
 
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,8 +15,14 @@ import java.time.LocalDate;
 @Builder
 public class CommentDto {
 
-    Long authorId;
-    String text;
-    LocalDate timestamp;
+    @Schema(description = "Authors id", required = true)
+    @NotBlank
+    private Long authorId;
+
+    @Schema(description = "Text comments", required = true)
+    private String text;
+
+    @Schema(description = "Date of creation")
+    private LocalDate timestamp;
 
 }

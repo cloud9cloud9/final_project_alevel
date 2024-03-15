@@ -16,6 +16,4 @@ public interface FavoriteMovieRepository extends JpaRepository<FavoriteMovie, Lo
 
     Optional<List<FavoriteMovie>> findAllByUser(User user);
 
-    Optional<FavoriteMovie> findByUserAndAndMovie(User user, Movie movie);
-
 }

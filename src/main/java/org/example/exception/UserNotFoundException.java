@@ -1,8 +1,9 @@
 package org.example.exception;
 
-public class UserNotFoundException extends RuntimeException {
+import java.io.Serial;
 
-    public UserNotFoundException(String message) {
-        super(message);
-    }
+public class UserNotFoundException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = 7L;
+
 }

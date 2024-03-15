@@ -1,7 +1,9 @@
 package org.example.exception;
 
-public class CommentNotFoundException extends RuntimeException{
+import java.io.Serial;
 
+public class CommentNotFoundException extends RuntimeException{
+    @Serial
     private static final long serialVersionUID = 3L;
 
 }

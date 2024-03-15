@@ -22,4 +22,8 @@ public class ApiConstantPath {
 
     public static final String RESULTS = "/results";
 
+    public static final String API_V1_FAVORITE = "/api/v1/favorite";
+
+    public static final String API_V1_COMMENT = "/api/v1/comment";
+
 }

@@ -6,7 +6,6 @@ import org.example.model.api_model.Movie;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface FavoriteMovieService {

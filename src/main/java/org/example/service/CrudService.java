@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.dto.auth.AuthenticationResponse;
 import org.example.model.BaseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Collection;

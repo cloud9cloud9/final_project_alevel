@@ -23,4 +23,5 @@ public class CreateMovieDto {
 
     @Schema(example = "https://m.media-amazon.com/images/M/MV5BMTkxNjUxODY3NF5BMl5BanBnXkFtZTcwMjQyMzMzMg@@._V1_SX300.jpg")
     private String poster;
+
 }

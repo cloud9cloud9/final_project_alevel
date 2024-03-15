@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,12 +34,18 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/test").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/v1/movie/**").permitAll()
-                        .requestMatchers("/api/v1/comment/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/movie/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/movie/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/movie/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/v1/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/v1/favorite/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest()
                         .authenticated()
                 )

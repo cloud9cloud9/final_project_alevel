@@ -17,7 +17,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +38,7 @@ public class CommentServiceImpl implements CommentService {
         Comment movieComment = movieMapper.toMovieComment(comment);
         movieComment.setMovie(movie);
         movieComment.setAuthorId(user.getId());
+        movieComment.setTimestamp(LocalDate.now());
         commentRepository.save(movieComment);
         return movie;
     }
@@ -45,11 +46,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteCommentById(@NonNull Long id) {
         commentRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Comment> findAllByMovieImdbId(@NonNull String imdbId) {
-        return commentRepository.findAllByMovie_ImdbId(imdbId);
     }
 
     @Override
@@ -62,23 +58,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findById(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(CommentNotFoundException::new);
-    }
-
-    @Override
-    public ResponseEntity<?> handleCommentAuthorization(Long commentId, User currentUser) {
-
+    public ResponseEntity<?> handleCommentAuthorization(Long commentId,
+                                                        User currentUser) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
+
         if (comment == null || currentUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
         }
 
-        if (!comment.getAuthorId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (currentUser.isAdmin()) {
+            return null;
+        } else if (currentUser.getId().equals(comment.getAuthorId())) {
+            return null;
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to update this comment");
         }
-        return null;
     }
 }

@@ -1,6 +1,9 @@
 package org.example.exception;
 
-public class DeleteMovieException extends RuntimeException {
+import java.io.Serial;
 
+public class DeleteMovieException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = 2L;
+
 }

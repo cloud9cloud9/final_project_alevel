@@ -1,14 +1,13 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.auth.AuthenticationResponse;
+import org.example.exception.InvalidTokenException;
 import org.example.model.Token;
 import org.example.repository.TokenRepository;
 import org.example.service.TokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 
@@ -20,29 +19,8 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository tokenRepository;
 
     @Override
-    public void create(Token entity) {
-        tokenRepository.save(entity);
-    }
-
-    @Override
-    public void update(Long id, Token entity) {
-
-    }
-
-
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public Token findById(Long id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Token> findAll() {
-        return null;
+    public void create(Token token) {
+        tokenRepository.save(token);
     }
 
     @Override
@@ -52,7 +30,8 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Token findByToken(String token) {
-        return tokenRepository.findByToken(token);
+        return tokenRepository.findByToken(token)
+                .orElseThrow(InvalidTokenException::new);
     }
 
     @Override

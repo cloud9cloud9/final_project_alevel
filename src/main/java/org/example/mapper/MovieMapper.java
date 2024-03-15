@@ -23,12 +23,6 @@ public class MovieMapper {
                 .build();
     }
 
-    public List<MovieDto> toMovieDto(List<Movie> movies) {
-        return movies.stream()
-                .map(this::toMovieDto)
-                .toList();
-    }
-
     public CommentDto toCommentDto(Comment comment) {
         return CommentDto.builder()
                 .authorId(comment.getAuthorId())
@@ -62,11 +56,6 @@ public class MovieMapper {
                 .build();
     }
 
-    public List<Comment> toMovieComment(List<CommentDto> commentDtos) {
-        return commentDtos.stream()
-                .map(this::toMovieComment)
-                .toList();
-    }
     public List<Movie> toMovie(List<MovieDto> movieDtos) {
         return movieDtos.stream()
                 .map(this::toMovie)

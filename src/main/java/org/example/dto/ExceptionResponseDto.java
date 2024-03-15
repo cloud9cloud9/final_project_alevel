@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(title = "Error", accessMode = Schema.AccessMode.READ_ONLY)
+@Schema(title = "Error")
 public class ExceptionResponseDto<T> {
 
     private String status;

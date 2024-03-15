@@ -22,12 +22,4 @@ public class UserMapper {
                 .map(this::toUserDto)
                 .toList();
     }
-
-    public User toUser(UserDto userDto) {
-        return User.builder()
-                .email(userDto.email())
-                .userName(userDto.userName())
-                .role(userDto.role())
-                .build();
-    }
 }

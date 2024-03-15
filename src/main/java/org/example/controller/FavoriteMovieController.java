@@ -1,7 +1,9 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.constant.ApiConstantPath;
 import org.example.dto.MovieDto;
 import org.example.model.User;
 import org.example.model.api_model.FavoriteMovie;
@@ -18,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/favorite")
+@RequestMapping(ApiConstantPath.API_V1_FAVORITE)
 public class FavoriteMovieController {
 
     private final FavoriteMovieService favoriteMovieService;
@@ -27,6 +29,8 @@ public class FavoriteMovieController {
 
 
     @GetMapping
+    @Operation(summary = "Get all favorite movies",
+            description = "Method provided to get all favorite movies, registered in the system")
     public ResponseEntity<?> getAllFavoriteMovies(Authentication authentication) {
         log.info("Get all favorite movies");
         User currentUser = authentication.getPrincipal() instanceof User ?
@@ -39,6 +43,8 @@ public class FavoriteMovieController {
     }
 
     @GetMapping("/{movieId}")
+    @Operation(summary = "Get favorite movie",
+            description = "Method provided to get favorite movie, registered in the system")
     public ResponseEntity<?> getFavoriteMovie(@PathVariable("movieId") String movieId,
                                               Authentication authentication) {
         log.info("Get favorite movie");
@@ -54,6 +60,8 @@ public class FavoriteMovieController {
 
 
     @PostMapping("/{movieId}")
+    @Operation(summary = "Add favorite movie",
+            description = "Method provided to add favorite movie, registered in the system, for a user")
     public ResponseEntity<?> addFavoriteMovie(@PathVariable("movieId") String movieId,
                                               Authentication authentication) {
         log.info("Add favorite movie");
@@ -67,6 +75,8 @@ public class FavoriteMovieController {
     }
 
     @DeleteMapping("/{movieId}")
+    @Operation(summary = "Delete favorite movie",
+            description = "Method provided to delete favorite movie, registered in the system, for a user")
     public ResponseEntity<?> deleteFavoriteMovie(@PathVariable("movieId") String movieId,
                                                  Authentication authentication) {
         log.info("Delete favorite movie");

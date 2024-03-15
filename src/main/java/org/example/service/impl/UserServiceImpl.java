@@ -25,24 +25,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public void create(@NonNull final User userEntity) {
         if (userRepository.existsByUserName(userEntity.getUsername())) {
-            throw new UserNotFoundException("User with this username already exists");
+            throw new RuntimeException("User with this username already exists");
         }
         userRepository.save(userEntity);
     }
 
     @Override
-    public void update(Long id, User entity) {
-
+    public void update(Long id, User user) {
+        User fUser = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        fUser.setUserName(user.getUsername());
+        fUser.setEmail(user.getEmail());
+        userRepository.save(fUser);
     }
 
     @Override
-    public void update(@NonNull Long id,
-                       @NonNull UserUpdateRequestDto updatedUser) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
-        user.setUserName(updatedUser.userName());
-        user.setEmail(updatedUser.email());
-        userRepository.save(user);
+    public void update(@NonNull final Long id,
+                       @NonNull UserUpdateRequestDto requestUser) {
+        User upUser = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        upUser.setUserName(requestUser.userName());
+        upUser.setEmail(requestUser.email());
+        userRepository.save(upUser);
     }
 
     @Override
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(@NonNull final Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
