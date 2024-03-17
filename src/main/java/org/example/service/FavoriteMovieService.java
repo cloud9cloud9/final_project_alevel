@@ -16,6 +16,6 @@ public interface FavoriteMovieService {
 
     List<FavoriteMovie> findAllByUser(User user);
 
-    FavoriteMovie findByUserAndAndMovie(User user, Movie movie);
+    FavoriteMovie findByUserAndMovie(User user, Movie movie);
 
 }

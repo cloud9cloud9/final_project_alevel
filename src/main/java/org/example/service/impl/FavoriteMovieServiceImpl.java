@@ -57,7 +57,7 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     }
 
     @Override
-    public FavoriteMovie findByUserAndAndMovie(User user,
+    public FavoriteMovie findByUserAndMovie(User user,
                                                Movie movie) {
         List<FavoriteMovie> movies = favoriteMovieRepository.findAllByUser(user)
                 .orElseThrow(EmptyFavoriteMoviesException::new);

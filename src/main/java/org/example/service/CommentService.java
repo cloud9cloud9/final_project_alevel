@@ -20,6 +20,6 @@ public interface CommentService {
 
     void update(Long id, CommentUpdateRequestDto comment);
 
-    ResponseEntity<?> handleCommentAuthorization(Long commentId, User currentUser);
+    boolean canManipulateComment(Long commentId, User currentUser);
 
 }

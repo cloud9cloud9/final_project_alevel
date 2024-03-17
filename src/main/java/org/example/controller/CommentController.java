@@ -45,12 +45,12 @@ public class CommentController {
                                            Authentication authentication) {
         log.info("Update comment");
         User currentUser = (User) authentication.getPrincipal();
-        ResponseEntity<?> authorizationResult = commentService.handleCommentAuthorization(commentId, currentUser);
-        if (authorizationResult != null) {
-            return authorizationResult;
+        boolean isAuthorized = commentService.canManipulateComment(commentId, currentUser);
+        if (isAuthorized) {
+            commentService.update(commentId, commentUpdateRequestDto);
+            return ResponseEntity.ok("Comment updated successfully");
         }
-        commentService.update(commentId, commentUpdateRequestDto);
-        return ResponseEntity.ok("Comment updated successfully");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 
@@ -62,10 +62,11 @@ public class CommentController {
         log.info("Delete comment");
         User currentUser = authentication.getPrincipal() instanceof User ?
                 (User) authentication.getPrincipal() : null;
-        if (commentService.handleCommentAuthorization(commentId, currentUser) != null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        boolean isAuthorized = commentService.canManipulateComment(commentId, currentUser);
+        if (isAuthorized) {
+            commentService.deleteCommentById(commentId);
+            return ResponseEntity.ok("Comment deleted successfully");
         }
-        commentService.deleteCommentById(commentId);
-        return ResponseEntity.ok("Comment deleted successfully");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }

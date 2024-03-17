@@ -42,10 +42,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final TokenService tokenService;
 
-    private final UserRepository userRepository;
-
     public AuthenticationResponse register(RegisterRequest request) {
-        boolean isEmpty = userRepository.findByUserName(request.getUserName()).isEmpty();
+        boolean isEmpty = userService.findByUserName(request.getUserName()).isEmpty();
         if(!isEmpty) {
             throw new UserRegistrationException();
         }

@@ -11,8 +11,6 @@ import org.example.model.api_model.Movie;
 import org.example.repository.CommentRepository;
 import org.example.service.CommentService;
 import org.example.service.MovieService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,21 +56,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<?> handleCommentAuthorization(@NonNull Long commentId,
-                                                        @NonNull User currentUser) {
+    public boolean canManipulateComment(@NonNull Long commentId,
+                                        User currentUser) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 
         if (comment == null || currentUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+            return false;
         }
-
         if (currentUser.isAdmin()) {
-            return null;
-        } else if (currentUser.getId().equals(comment.getAuthorId())) {
-            return null;
+            return true;
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not authorized to update this comment");
+            return currentUser.getId().equals(comment.getAuthorId());
         }
     }
 }

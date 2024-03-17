@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +108,11 @@ public class JwtServiceImpl implements JwtService {
                                 UserDetails userDetails) {
         final String username = extractUsername(jwt);
         final Token token = tokenService.findByToken(jwt);
-        return (username.equals(userDetails.getUsername())) && !token.isExpired();
+        return (username.equals(userDetails.getUsername())) && !token.isExpired() && !isTokenExpired(jwt);
+    }
+
+    private boolean isTokenExpired(String jwt) {
+        return extractExpiration(jwt).before(new Date());
     }
 
 

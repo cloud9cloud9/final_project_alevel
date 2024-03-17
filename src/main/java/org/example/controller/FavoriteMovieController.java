@@ -54,7 +54,7 @@ public class FavoriteMovieController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
         Movie movie = movieService.validateAndGetMovie(movieId);
-        FavoriteMovie favMovie = favoriteMovieService.findByUserAndAndMovie(currentUser, movie);
+        FavoriteMovie favMovie = favoriteMovieService.findByUserAndMovie(currentUser, movie);
         return ResponseEntity.ok(favMovie);
     }
 

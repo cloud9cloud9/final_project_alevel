@@ -42,11 +42,10 @@ public class MovieController {
     @PutMapping("/{imdbId}")
     @Operation(summary = "Update movie",
             description = "Method provided to update movie, via its title, value is required")
-    public ResponseEntity<?> updateMovie(@PathVariable("imdbId") String imdbId,
+    public void updateMovie(@PathVariable("imdbId") String imdbId,
                                          @RequestBody UpdateMovieRequestDto updateMovieRequestDto) {
         log.info("Update movie with id: {}", imdbId);
         movieService.update(imdbId, updateMovieRequestDto);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{imdbId}")
